@@ -1,0 +1,521 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Yuvraj Sureka | Corporate Work OS</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #090b0f;
+        --panel: rgba(20, 24, 31, 0.82);
+        --panel-strong: rgba(30, 35, 44, 0.98);
+        --text: #eef5f6;
+        --muted: #9eb0b7;
+        --line: rgba(220, 230, 232, 0.16);
+        --accent: #5ed6c5;
+        --gold: #f4ca64;
+        --danger: #ff7272;
+        --success: #63d471;
+        --shadow: 0 24px 80px rgba(0, 0, 0, 0.28);
+        --radius: 8px;
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      }
+
+      [data-theme="light"] {
+        color-scheme: light;
+        --bg: #f5f6f3;
+        --panel: rgba(255, 255, 255, 0.86);
+        --panel-strong: #ffffff;
+        --text: #16202a;
+        --muted: #65727c;
+        --line: rgba(36, 48, 58, 0.15);
+        --shadow: 0 24px 70px rgba(35, 50, 60, 0.15);
+      }
+
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background: linear-gradient(135deg, var(--bg), #12161b 52%, #0b1112);
+        color: var(--text);
+      }
+      [data-theme="light"] body { background: linear-gradient(135deg, #f5f6f3, #e8eef0, #f8f5eb); }
+      button, input, select, textarea { font: inherit; }
+      button { cursor: pointer; }
+      .layout { display: grid; grid-template-columns: 280px minmax(0, 1fr); min-height: 100vh; }
+      .sidebar {
+        position: sticky;
+        top: 0;
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        padding: 22px 16px;
+        border-right: 1px solid var(--line);
+        background: rgba(7, 9, 12, 0.86);
+        backdrop-filter: blur(18px);
+        overflow: hidden;
+      }
+      [data-theme="light"] .sidebar { background: rgba(246, 249, 250, 0.88); }
+      .brand { display: flex; flex-shrink: 0; gap: 12px; align-items: center; padding: 8px 8px 18px; }
+      .brand-mark {
+        display: grid;
+        place-items: center;
+        width: 42px;
+        height: 42px;
+        border-radius: var(--radius);
+        color: #071014;
+        background: linear-gradient(135deg, var(--accent), var(--gold));
+        font-weight: 900;
+      }
+      .brand strong, .profile-mini strong { display: block; }
+      .brand span, .profile-mini span { display: block; color: var(--muted); font-size: 0.82rem; }
+      .nav {
+        display: grid;
+        flex: 1 1 auto;
+        gap: 6px;
+        margin-top: 10px;
+        padding-right: 4px;
+        overflow-y: auto;
+        min-height: 0;
+      }
+      .nav button, .ghost, .primary, .icon, .tab {
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        color: var(--text);
+        background: transparent;
+        transition: 160ms ease;
+      }
+      .nav button { display: flex; justify-content: space-between; width: 100%; padding: 11px 12px; color: var(--muted); text-align: left; }
+      .nav button:hover, .nav button.active, .ghost:hover, .icon:hover, .tab.active {
+        border-color: rgba(94, 214, 197, 0.48);
+        background: rgba(94, 214, 197, 0.1);
+        color: var(--text);
+      }
+      .profile-mini {
+        position: static;
+        flex-shrink: 0;
+        margin-top: 12px;
+        padding: 14px;
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        background: var(--panel);
+      }
+      .topbar {
+        position: sticky;
+        z-index: 4;
+        top: 0;
+        display: grid;
+        grid-template-columns: minmax(220px, 1fr) auto;
+        gap: 14px;
+        padding: 18px 26px;
+        border-bottom: 1px solid var(--line);
+        background: rgba(9, 11, 15, 0.82);
+        backdrop-filter: blur(18px);
+      }
+      [data-theme="light"] .topbar { background: rgba(245, 247, 247, 0.88); }
+      .row, .filters, .actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+      .content { padding: 26px; }
+      .input, .select, .textarea {
+        width: 100%;
+        min-height: 42px;
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        padding: 10px 12px;
+        color: var(--text);
+        background-color: rgba(255, 255, 255, 0.06);
+        outline: none;
+      }
+      .select { color-scheme: dark; }
+      .select option {
+        color: #eef5f6;
+        background: #151a20;
+      }
+      [data-theme="light"] .input, [data-theme="light"] .select, [data-theme="light"] .textarea { background: #fff; }
+      [data-theme="light"] .select { color-scheme: light; }
+      [data-theme="light"] .select option {
+        color: #16202a;
+        background: #ffffff;
+      }
+      .input:focus, .select:focus, .textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(94, 214, 197, 0.12); }
+      .search { max-width: 520px; }
+      .compact { max-width: 170px; }
+      .textarea { min-height: 96px; resize: vertical; }
+      .primary, .ghost, .icon, .tab { min-height: 40px; padding: 10px 13px; }
+      .primary { border: 0; color: #071014; background: linear-gradient(135deg, var(--accent), var(--gold)); font-weight: 850; }
+      .icon { min-width: 42px; padding: 0 9px; }
+      .danger { border-color: rgba(255, 114, 114, 0.42); color: #ffc4c4; }
+      .hero { display: grid; grid-template-columns: minmax(0, 1.45fr) minmax(280px, 0.65fr); gap: 18px; margin-bottom: 18px; }
+      .hero-copy, .panel, .profile-card, .stat, .card, .modal, .kanban-col, .calendar-day {
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        background: var(--panel);
+        box-shadow: var(--shadow);
+        backdrop-filter: blur(18px);
+      }
+      .hero-copy { padding: 34px; background: linear-gradient(135deg, rgba(94, 214, 197, 0.12), transparent 35%), var(--panel); }
+      .eyebrow { margin: 0 0 10px; color: var(--accent); font-size: 0.78rem; font-weight: 850; text-transform: uppercase; }
+      h1, h2, h3, p { margin-top: 0; }
+      h1 { max-width: 880px; margin-bottom: 12px; font-size: 3.5rem; line-height: 1.02; letter-spacing: 0; }
+      h2 { margin-bottom: 14px; font-size: 1.28rem; }
+      h3 { margin-bottom: 8px; font-size: 1rem; }
+      .lede { max-width: 760px; color: var(--muted); line-height: 1.65; }
+      .profile-card, .panel { padding: 18px; }
+      .profile-grid, .metrics, .form-grid { display: grid; gap: 12px; }
+      .profile-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 18px; }
+      .profile-grid div, .stat, .empty {
+        padding: 14px;
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        background: rgba(255, 255, 255, 0.045);
+      }
+      .label, label span { display: block; margin-bottom: 6px; color: var(--muted); font-size: 0.78rem; font-weight: 800; text-transform: uppercase; }
+      .metrics { grid-template-columns: repeat(4, minmax(0, 1fr)); margin-bottom: 18px; }
+      .stat strong { display: block; margin-top: 8px; font-size: 2.15rem; }
+      .stat small { color: var(--muted); }
+      .grid-2 { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr); gap: 18px; margin-top: 18px; }
+      .panel-head { display: flex; justify-content: space-between; gap: 12px; align-items: center; margin-bottom: 14px; }
+      .filters { margin: 16px 0; padding: 12px; border: 1px solid var(--line); border-radius: var(--radius); background: rgba(255, 255, 255, 0.035); }
+      .filters > * { flex: 1 1 150px; }
+      .records { display: grid; gap: 12px; }
+      .card { padding: 14px; box-shadow: none; background: rgba(255, 255, 255, 0.04); }
+      .card-top { display: flex; justify-content: space-between; gap: 12px; align-items: flex-start; }
+      .meta, .tags { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 10px; }
+      .pill, .tag {
+        display: inline-flex;
+        align-items: center;
+        min-height: 24px;
+        padding: 3px 8px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        color: var(--muted);
+        font-size: 0.78rem;
+      }
+      .high, .blocked { color: #fff0f0; border-color: rgba(255, 114, 114, 0.45); background: rgba(255, 114, 114, 0.12); }
+      .medium { color: #fff7d8; border-color: rgba(244, 202, 100, 0.45); background: rgba(244, 202, 100, 0.12); }
+      .low, .completed, .applied, .mastered, .done { color: #e9ffec; border-color: rgba(99, 212, 113, 0.45); background: rgba(99, 212, 113, 0.12); }
+      .bar-row { display: grid; grid-template-columns: 130px 1fr 64px; gap: 10px; align-items: center; margin: 12px 0; }
+      .bar-track { height: 12px; overflow: hidden; border-radius: 999px; background: rgba(255, 255, 255, 0.08); }
+      .bar-fill { height: 100%; border-radius: 999px; background: linear-gradient(90deg, var(--accent), var(--gold)); }
+      .donut { display: grid; place-items: center; width: 190px; height: 190px; margin: 16px auto; border-radius: 50%; background: conic-gradient(var(--accent) var(--angle), rgba(255,255,255,.08) 0); }
+      .donut span { display: grid; place-items: center; width: 122px; height: 122px; border-radius: 50%; background: var(--panel-strong); font-size: 2rem; font-weight: 900; }
+      .kanban { display: grid; grid-template-columns: repeat(4, minmax(220px, 1fr)); gap: 14px; overflow-x: auto; }
+      .kanban-col { min-height: 280px; padding: 12px; box-shadow: none; }
+      .calendar, .weekdays { display: grid; grid-template-columns: repeat(7, minmax(110px, 1fr)); gap: 8px; overflow-x: auto; }
+      .weekdays { margin: 14px 0 8px; color: var(--muted); font-size: .78rem; font-weight: 800; text-transform: uppercase; }
+      .calendar-day, .blank { min-height: 116px; padding: 10px; box-shadow: none; }
+      .calendar-item { display: block; width: 100%; margin: 5px 0; padding: 5px 6px; border: 0; border-radius: 6px; color: var(--text); background: rgba(94,214,197,.1); text-align: left; font-size: .78rem; }
+      .empty { color: var(--muted); text-align: center; }
+      .form-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .full { grid-column: 1 / -1; }
+      .modal-bg { position: fixed; z-index: 20; inset: 0; display: grid; place-items: center; padding: 20px; background: rgba(0,0,0,.58); }
+      .modal { width: min(940px, 100%); max-height: min(90vh, 920px); overflow: auto; padding: 18px; background: var(--panel-strong); }
+      .modal-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+      .toast { position: fixed; z-index: 30; right: 18px; bottom: 18px; max-width: min(360px, calc(100vw - 36px)); padding: 12px 14px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--panel-strong); box-shadow: var(--shadow); }
+      @media (max-width: 1040px) {
+        .layout, .hero, .grid-2 { grid-template-columns: 1fr; }
+        .sidebar { position: static; height: auto; border-right: 0; border-bottom: 1px solid var(--line); }
+        .profile-mini { position: static; margin-top: 14px; }
+        .nav { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      }
+      @media (max-width: 760px) {
+        .content, .topbar { padding: 16px; }
+        .topbar, .metrics, .form-grid, .profile-grid { grid-template-columns: 1fr; }
+        .nav { grid-template-columns: 1fr; }
+        .card-top, .panel-head { display: grid; }
+        h1 { font-size: 2.1rem; }
+        .bar-row { grid-template-columns: 1fr; }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script>
+      const profile = { name: "Yuvraj Sureka", company: "Verity Knowledge Solutions", position: "Analyst", department: "Products", gpn: "43897833" };
+      const key = "corporateWorkOS.github.single.v1";
+      const statusOptions = ["Not Started", "In Progress", "Blocked", "Completed"];
+      const priorityOptions = ["High", "Medium", "Low"];
+      const supportCategories = ["Processes improved", "Work automated", "Reports created", "Errors prevented", "Time saved", "Initiative taken"];
+      const learningCategories = ["Skills learned", "Excel/VBA/Python concepts", "Finance concepts", "Communication improvements", "Mistakes made", "Lessons learned"];
+      const views = [["dashboard","Dashboard"],["work","Daily Work Log"],["support","Manager Support"],["learning","Learning"],["analytics","Analytics"],["kanban","Kanban"],["calendar","Calendar"],["reminders","Reminders"],["reflection","Reflection"],["profile","Profile"]];
+      const emptyData = () => ({ workLogs: [], support: [], learning: [], reflections: [], reminders: [], settings: { theme: "dark", activeView: "dashboard", calendarMonth: new Date().toISOString().slice(0, 7), filters: { query: "", status: "All", priority: "All", department: "All", category: "All", tag: "All", from: "", to: "" } } });
+      let data = loadData();
+      let modal = null;
+      let toast = "";
+      const app = document.querySelector("#app");
+
+      render();
+
+      function loadData() {
+        try {
+          const raw = localStorage.getItem(key) || localStorage.getItem("corporateWorkOS.v2") || localStorage.getItem("corporateWorkOS.v1");
+          return raw ? merge(JSON.parse(raw)) : emptyData();
+        } catch { return emptyData(); }
+      }
+      function merge(saved = {}) {
+        const base = emptyData();
+        return { ...base, ...saved, settings: { ...base.settings, ...(saved.settings || {}), filters: { ...base.settings.filters, ...(saved.settings?.filters || {}) } } };
+      }
+      function save() {
+        localStorage.setItem(key, JSON.stringify(merge(data)));
+        localStorage.setItem("corporateWorkOS.v2", JSON.stringify(merge(data)));
+      }
+      function id(prefix) { return `${prefix}_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`; }
+      function number(value) { return Number.parseFloat(value || 0) || 0; }
+      function dateOf(item) { return item.deadline || item.date || item.createdAt?.slice(0, 10) || ""; }
+      function splitTags(value = "") { return String(value).split(",").map(tag => tag.trim().toLowerCase()).filter(Boolean); }
+      function slug(value) { return String(value).toLowerCase().replace(/[^a-z0-9]+/g, "-"); }
+      function esc(value) { return String(value ?? "").replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;" }[c])); }
+      function options(values, selected) { return values.map(value => `<option value="${esc(value)}" ${value === selected ? "selected" : ""}>${esc(value)}</option>`).join(""); }
+
+      function analytics() {
+        const completed = data.workLogs.filter(item => item.status === "Completed");
+        const totalHours = data.workLogs.reduce((sum, item) => sum + number(item.timeSpent), 0);
+        const completedHours = completed.reduce((sum, item) => sum + number(item.timeSpent), 0);
+        const learningHours = data.learning.reduce((sum, item) => sum + number(item.hours), 0);
+        const timeSaved = data.support.reduce((sum, item) => sum + number(item.timeSaved), 0);
+        const completionRate = data.workLogs.length ? Math.round((completed.length / data.workLogs.length) * 100) : 0;
+        const efficiencyScore = data.workLogs.length || data.support.length || data.learning.length
+          ? Math.min(100, Math.round(completionRate * 0.35 + Math.min(data.support.length * 7, 22) + Math.min(learningHours * 4, 22) + Math.min(timeSaved * 3, 21)))
+          : 0;
+        return {
+          totalTasks: data.workLogs.length,
+          completedTasks: completed.length,
+          totalHours: round(totalHours),
+          learningHours: round(learningHours),
+          timeSaved: round(timeSaved),
+          completionRate,
+          avgCompletion: completed.length ? round(completedHours / completed.length) : 0,
+          efficiencyScore,
+          priorityCounts: countBy(data.workLogs, "priority"),
+          supportCounts: countBy(data.support, "category"),
+          departmentHours: groupHours(data.workLogs, "department", "timeSpent"),
+          weeklyWork: weekly(data.workLogs, "timeSpent"),
+          weeklyLearning: weekly(data.learning, "hours"),
+          weeklyCompleted: weeklyCount(completed),
+          productivity: productivity()
+        };
+      }
+      function round(value) { return Math.round(value * 10) / 10; }
+      function countBy(items, field) { return items.reduce((map, item) => { const k = item[field] || "Unspecified"; map[k] = (map[k] || 0) + 1; return map; }, {}); }
+      function groupHours(items, field, valueField) { return items.reduce((map, item) => { const k = item[field] || "Unspecified"; map[k] = round((map[k] || 0) + number(item[valueField])); return map; }, {}); }
+      function weekKey(value) {
+        if (!value) return "";
+        const date = new Date(`${value}T00:00:00`);
+        if (Number.isNaN(date.getTime())) return "";
+        date.setDate(date.getDate() - date.getDay());
+        return date.toISOString().slice(0, 10);
+      }
+      function weekly(items, field) { return items.reduce((map, item) => { const k = weekKey(dateOf(item)); if (k) map[k] = round((map[k] || 0) + number(item[field])); return map; }, {}); }
+      function weeklyCount(items) { return items.reduce((map, item) => { const k = weekKey(dateOf(item)); if (k) map[k] = (map[k] || 0) + 1; return map; }, {}); }
+      function productivity() { return data.workLogs.reduce((map, item) => { const k = weekKey(dateOf(item)); if (k) map[k] = round((map[k] || 0) + number(item.timeSpent) + (item.status === "Completed" ? 2 : 0)); return map; }, {}); }
+
+      function render() {
+        document.documentElement.dataset.theme = data.settings.theme;
+        app.innerHTML = `<div class="layout">${sidebar()}<main><header class="topbar">${topbar()}</header><section class="content">${view()}</section></main></div>${modal ? modalHtml() : ""}${toast ? `<div class="toast">${toast}</div>` : ""}`;
+        bind();
+      }
+      function sidebar() {
+        return `<aside class="sidebar"><div class="brand"><div class="brand-mark">YS</div><div><strong>Corporate Work OS</strong><span>${profile.company}</span></div></div><nav class="nav">${views.map(([id,label]) => `<button class="${data.settings.activeView === id ? "active" : ""}" data-view="${id}"><span>${label}</span><span>${badge(id)}</span></button>`).join("")}</nav><div class="profile-mini"><strong>${profile.name}</strong><span>${profile.position} - ${profile.department}</span><span>GPN ${profile.gpn}</span></div></aside>`;
+      }
+      function topbar() {
+        const f = data.settings.filters;
+        return `<div class="row"><input class="input search" data-filter="query" value="${esc(f.query)}" placeholder="Search work, impact, learning, tags..." /><select class="select compact" data-filter="status">${options(["All", ...new Set([...statusOptions, "Learning", "Practicing", "Applied", "Mastered", "Open", "Done"])], f.status)}</select><select class="select compact" data-filter="priority">${options(["All", ...priorityOptions], f.priority)}</select></div><div class="actions"><button class="ghost" data-action="theme">${data.settings.theme === "dark" ? "Light Mode" : "Dark Mode"}</button><button class="primary" data-action="quick-add">Add Entry</button></div>`;
+      }
+      function view() {
+        const a = analytics();
+        const current = data.settings.activeView;
+        if (current === "dashboard") return dashboard(a);
+        if (current === "work") return collection("Daily Work Log", "Capture assignments, deadlines, outcomes, learning, challenges, solutions, and impact.", "work", filteredWork());
+        if (current === "support") return collection("Manager Support Tracker", "Track process improvements, automation, reports, errors prevented, time saved, and initiative.", "support", filteredSupport());
+        if (current === "learning") return collection("Learning Dashboard", "Record skills, technical concepts, finance concepts, communication growth, mistakes, and lessons.", "learning", filteredLearning());
+        if (current === "analytics") return analyticsView(a);
+        if (current === "kanban") return kanban();
+        if (current === "calendar") return calendar();
+        if (current === "reminders") return collection("Notifications and Reminders", "Track follow-ups, deadline nudges, review notes, and open reminders.", "reminder", filteredReminders());
+        if (current === "reflection") return collection("Reflection System", "Close the day with wins, challenges, improvements, and tomorrow's focus.", "reflection", filteredReflections());
+        return profileView(a);
+      }
+      function dashboard(a) {
+        return `<section class="hero"><div class="hero-copy"><p class="eyebrow">High performer operating system</p><h1>Good ${greeting()}, ${profile.name}. Build a review-ready record of focused work.</h1><p class="lede">Track assignments, learning, impact, support work, and reflections. The dashboard starts empty and every metric is generated from your own entries.</p><div class="row"><button class="primary" data-open="work">Log Daily Work</button><button class="ghost" data-open="reflection">End-of-Day Reflection</button><button class="ghost" data-action="pdf">Export PDF Report</button></div></div>${profileCard()}</section>${metrics(a)}<section class="grid-2"><div class="panel"><div class="panel-head"><h2>Current Workstream</h2><button class="ghost" data-view="work">View All</button></div>${records(filteredWork().slice(0,5), "work")}</div><div class="panel"><div class="panel-head"><h2>Reminders</h2><button class="ghost" data-open="reminder">Add</button></div>${records(data.reminders.slice(0,4), "reminder")}</div></section><section class="grid-2"><div class="panel">${bar("Productivity Index", a.productivity, "pts")}</div><div class="panel">${donut(a.completionRate)}</div></section>`;
+      }
+      function profileCard() {
+        return `<aside class="profile-card"><p class="eyebrow">Corporate profile</p><h2>${profile.name}</h2><p class="lede">${profile.position} focused on disciplined execution, learning velocity, and measurable business impact.</p><div class="profile-grid"><div><span class="label">Company</span><strong>${profile.company}</strong></div><div><span class="label">Department</span><strong>${profile.department}</strong></div><div><span class="label">Position</span><strong>${profile.position}</strong></div><div><span class="label">GPN</span><strong>${profile.gpn}</strong></div></div></aside>`;
+      }
+      function metrics(a) {
+        return `<section class="metrics">${[["Tasks Logged", a.totalTasks, "Daily work records"],["Completed", a.completedTasks, `${a.completionRate}% completion rate`],["Avg Completion", `${a.avgCompletion}h`, "Average hours on completed tasks"],["Efficiency", `${a.efficiencyScore}%`, "Completion, learning, and leverage"]].map(m => `<article class="stat"><span class="label">${m[0]}</span><strong>${m[1]}</strong><small>${m[2]}</small></article>`).join("")}</section>`;
+      }
+      function collection(title, intro, type, items) {
+        return `<div class="panel"><div class="panel-head"><div><h2>${title}</h2><p class="lede">${intro}</p></div><div class="row"><button class="ghost" data-action="csv">Export Excel</button><button class="primary" data-open="${type}">Add Record</button></div></div>${filters()}${records(items, type)}</div>`;
+      }
+      function filters() {
+        const f = data.settings.filters;
+        const departments = ["All", ...new Set([...data.workLogs, ...data.support].map(i => i.department).filter(Boolean).sort())];
+        const categories = ["All", ...new Set([...data.support.map(i => i.category), ...data.learning.map(i => i.category)].filter(Boolean).sort())];
+        const tags = ["All", ...new Set([...data.workLogs, ...data.support, ...data.learning].flatMap(i => splitTags(i.tags)).sort())];
+        return `<div class="filters"><select class="select" data-filter="department">${options(departments, f.department)}</select><select class="select" data-filter="category">${options(categories, f.category)}</select><select class="select" data-filter="tag">${options(tags, f.tag)}</select><input class="input" type="date" data-filter="from" value="${esc(f.from)}" /><input class="input" type="date" data-filter="to" value="${esc(f.to)}" /><button class="ghost" data-action="clear">Clear Filters</button></div>`;
+      }
+      function analyticsView(a) {
+        return `${metrics(a)}<section class="grid-2"><div class="panel">${bar("Weekly Work Hours", a.weeklyWork, "h")}</div><div class="panel">${bar("Tasks Completed by Week", a.weeklyCompleted, "tasks")}</div></section><section class="grid-2"><div class="panel">${bar("Learning Hours", a.weeklyLearning, "h")}</div><div class="panel">${bar("Department-wise Work", a.departmentHours, "h")}</div></section><section class="grid-2"><div class="panel">${bar("Priority Mix", a.priorityCounts, "tasks")}</div><div class="panel">${bar("Manager Support Categories", a.supportCounts, "items")}</div></section>`;
+      }
+      function records(items, type) {
+        if (!items.length) return `<div class="empty">No user-created records yet. Add your first entry to activate this section.</div>`;
+        return `<div class="records">${items.map(item => card(item, type)).join("")}</div>`;
+      }
+      function card(item, type, compact = false) {
+        const title = item.taskAssigned || item.title || item.skill || item.biggestWin || item.wentWell || item.message || "Untitled record";
+        const subtitle = item.notes || item.description || item.lesson || item.tomorrowFocus || item.impact || "";
+        const meta = [dateOf(item) && `Date ${dateOf(item)}`, item.department, item.category, item.assignedBy && `By ${item.assignedBy}`, item.timeSpent && `${item.timeSpent}h`, item.timeSaved && `${item.timeSaved}h saved`, item.hours && `${item.hours}h learning`].filter(Boolean);
+        return `<article class="card"><div class="card-top"><div><h3>${esc(title)}</h3>${subtitle && !compact ? `<p>${esc(subtitle)}</p>` : ""}</div><div class="row">${item.status ? `<span class="pill ${slug(item.status)}">${esc(item.status)}</span>` : ""}${item.priority ? `<span class="pill ${item.priority.toLowerCase()}">${esc(item.priority)}</span>` : ""}<button class="icon" data-edit="${type}:${item.id}">Edit</button><button class="icon danger" data-delete="${collectionOf(type)}:${item.id}">Del</button></div></div>${meta.length ? `<div class="meta">${meta.map(m => `<span class="pill">${esc(m)}</span>`).join("")}</div>` : ""}${item.tags ? `<div class="tags">${item.tags.split(",").map(t => `<span class="tag">${esc(t.trim())}</span>`).join("")}</div>` : ""}${type === "work" ? `<div class="row" style="margin-top:12px">${statusOptions.map(s => `<button class="tab ${item.status === s ? "active" : ""}" data-status="${item.id}:${s}">${s}</button>`).join("")}</div>` : ""}</article>`;
+      }
+      function bar(title, values, suffix) {
+        const entries = Object.entries(values).sort(([a],[b]) => a.localeCompare(b));
+        if (!entries.length) return `<h2>${title}</h2><div class="empty">Add records to generate this chart.</div>`;
+        const max = Math.max(...entries.map(([,v]) => Number(v)), 1);
+        return `<h2>${title}</h2>${entries.map(([label,value]) => `<div class="bar-row"><span>${esc(label)}</span><div class="bar-track"><div class="bar-fill" style="width:${Math.max(4, Number(value) / max * 100)}%"></div></div><strong>${value} ${suffix}</strong></div>`).join("")}`;
+      }
+      function donut(rate) { return `<h2>Completion Rate</h2><div class="donut" style="--angle:${rate * 3.6}deg"><span>${rate}%</span></div><p class="lede">Completed daily work logs divided by all daily work logs.</p>`; }
+      function kanban() {
+        return `<div class="panel-head"><h2>Kanban Board</h2><button class="primary" data-open="work">Add Work Log</button></div><div class="kanban">${statusOptions.map(status => { const items = filteredWork().filter(i => i.status === status); return `<section class="kanban-col"><div class="panel-head"><h3>${status}</h3><span class="pill">${items.length}</span></div>${items.length ? `<div class="records">${items.map(i => card(i, "work", true)).join("")}</div>` : `<div class="empty">No records here yet.</div>`}</section>`; }).join("")}</div>`;
+      }
+      function calendar() {
+        const [year, monthIndex] = data.settings.calendarMonth.split("-").map(Number);
+        const month = monthIndex - 1;
+        const first = new Date(year, month, 1);
+        const days = new Date(year, month + 1, 0).getDate();
+        const blanks = Array.from({ length: first.getDay() }, () => `<div class="blank"></div>`).join("");
+        const cells = Array.from({ length: days }, (_, i) => {
+          const day = i + 1;
+          const iso = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+          const items = calendarItems().filter(item => item.date === iso);
+          return `<div class="calendar-day"><strong>${day}</strong>${items.map(item => `<button class="calendar-item" data-view="${item.view}">${esc(item.label)}</button>`).join("")}</div>`;
+        }).join("");
+        return `<div class="panel-head"><div><h2>${first.toLocaleString("default", { month: "long", year: "numeric" })} Calendar</h2><p class="lede">Deadlines, reminders, learning, support, and reflections appear here when dated.</p></div><div class="row"><button class="ghost" data-month="-1">Previous</button><button class="ghost" data-month="1">Next</button><button class="primary" data-open="work">Add Deadline</button></div></div><div class="weekdays">${["Sun","Mon","Tue","Wed","Thu","Fri","Sat"].map(d => `<span>${d}</span>`).join("")}</div><div class="calendar">${blanks}${cells}</div>`;
+      }
+      function profileView(a) {
+        return `<section class="hero">${profileCard()}<div class="panel"><h2>Export Center</h2><p class="lede">Reports include your professional credentials and only user-entered records.</p><div class="row"><button class="primary" data-action="pdf">Export PDF</button><button class="ghost" data-action="csv">Export Excel</button><button class="ghost" data-action="backup">Download Backup</button></div></div></section>${metrics(a)}`;
+      }
+
+      function modalHtml() {
+        return `<div class="modal-bg" data-close="true"><div class="modal"><div class="modal-head"><h2>${modalTitle(modal.type)}</h2><button class="icon" data-action="close">Close</button></div><form class="form-grid" data-form="${modal.type}">${formFields(modal.type, modal.record)}<div class="full row"><button class="primary" type="submit">Save</button><button class="ghost" type="button" data-action="close">Cancel</button></div></form></div></div>`;
+      }
+      function formFields(type, record = {}) {
+        if (type === "work") return fields([["taskAssigned","Task assigned","text",true],["priority","Priority","select",true,priorityOptions],["assignedBy","Assigned by","text"],["deadline","Deadline","date"],["department","Department","text",false,null,profile.department],["timeSpent","Time spent (hours)","number"],["status","Status","select",true,statusOptions],["tags","Tags","text"],["notes","Notes","textarea"],["outcome","Outcome","textarea"],["learning","Learning","textarea"],["challenges","Challenges faced","textarea"],["solution","How I solved it","textarea"],["impact","Impact created","textarea"]], record);
+        if (type === "support") return fields([["date","Date","date"],["category","Support category","select",true,supportCategories],["title","Title","text",true],["department","Department","text",false,null,profile.department],["timeSaved","Time saved (hours)","number"],["priority","Priority","select",true,priorityOptions],["status","Status","select",true,statusOptions],["tags","Tags","text"],["description","Description","textarea"],["impact","Impact created","textarea"]], record);
+        if (type === "learning") return fields([["date","Date","date"],["category","Learning category","select",true,learningCategories],["skill","Skill or concept","text",true],["hours","Learning hours","number"],["status","Status","select",true,["Learning","Practicing","Applied","Mastered"]],["tags","Tags","text"],["lesson","Lesson learned","textarea"],["mistake","Mistake made","textarea"],["application","How I applied it","textarea"]], record);
+        if (type === "reflection") return fields([["date","Date","date",true],["wentWell","What went well","textarea"],["couldImprove","What could improve","textarea"],["biggestWin","Biggest win","textarea"],["biggestChallenge","Biggest challenge","textarea"],["tomorrowFocus","Tomorrow's focus","textarea"]], record);
+        return fields([["date","Reminder date","date",true],["message","Reminder","textarea",true],["status","Status","select",true,["Open","Done"]]], record);
+      }
+      function fields(defs, record) {
+        return defs.map(([name,label,type,required,choices,fallback]) => {
+          const value = record[name] ?? fallback ?? "";
+          const req = required ? "required" : "";
+          if (type === "select") return `<label><span>${label}</span><select class="select" name="${name}" ${req}>${options(choices, value)}</select></label>`;
+          if (type === "textarea") return `<label class="full"><span>${label}</span><textarea class="textarea" name="${name}" ${req}>${esc(value)}</textarea></label>`;
+          return `<label><span>${label}</span><input class="input" name="${name}" type="${type}" value="${esc(value)}" ${type === "number" ? 'min="0" step="0.25"' : ""} ${req} /></label>`;
+        }).join("");
+      }
+
+      function bind() {
+        document.querySelectorAll("[data-view]").forEach(el => el.addEventListener("click", () => setView(el.dataset.view)));
+        document.querySelectorAll("[data-open]").forEach(el => el.addEventListener("click", () => openForm(el.dataset.open)));
+        document.querySelectorAll("[data-edit]").forEach(el => el.addEventListener("click", () => editRecord(el.dataset.edit)));
+        document.querySelectorAll("[data-delete]").forEach(el => el.addEventListener("click", () => deleteItem(el.dataset.delete)));
+        document.querySelectorAll("[data-status]").forEach(el => el.addEventListener("click", () => updateStatus(el.dataset.status)));
+        document.querySelectorAll("[data-month]").forEach(el => el.addEventListener("click", () => moveMonth(Number(el.dataset.month))));
+        document.querySelectorAll("[data-action]").forEach(el => el.addEventListener("click", () => action(el.dataset.action)));
+        document.querySelectorAll("[data-filter]").forEach(el => el.addEventListener("input", () => { data.settings.filters[el.dataset.filter] = el.value; save(); render(); }));
+        document.querySelectorAll("form[data-form]").forEach(form => form.addEventListener("submit", submit));
+        document.querySelectorAll(".modal-bg").forEach(bg => bg.addEventListener("click", event => { if (event.target.dataset.close) closeModal(); }));
+      }
+      function setView(view) { data.settings.activeView = view; save(); render(); }
+      function openForm(type, record = {}) { modal = { type, record }; render(); }
+      function closeModal() { modal = null; render(); }
+      function editRecord(token) { const [type, itemId] = token.split(":"); const record = data[collectionOf(type)].find(i => i.id === itemId); openForm(type, record || {}); }
+      function deleteItem(token) { const [collection, itemId] = token.split(":"); if (!confirm("Delete this record?")) return; data[collection] = data[collection].filter(i => i.id !== itemId); notify("Record deleted."); }
+      function updateStatus(token) { const [itemId, status] = token.split(":"); const record = data.workLogs.find(i => i.id === itemId); if (record) { record.status = status; record.updatedAt = new Date().toISOString(); notify(`Status updated to ${status}.`); } }
+      function submit(event) {
+        event.preventDefault();
+        const type = event.currentTarget.dataset.form;
+        const collection = collectionOf(type);
+        const values = Object.fromEntries(new FormData(event.currentTarget).entries());
+        const now = new Date().toISOString();
+        const record = { ...(modal.record || {}), ...values, id: modal.record?.id || id(type), createdAt: modal.record?.createdAt || now, updatedAt: now };
+        const index = data[collection].findIndex(i => i.id === record.id);
+        if (index >= 0) data[collection][index] = record; else data[collection].unshift(record);
+        modal = null;
+        notify("Record saved.");
+      }
+      function action(name) {
+        if (name === "theme") { data.settings.theme = data.settings.theme === "dark" ? "light" : "dark"; notify("Theme updated."); }
+        if (name === "quick-add") openForm(["work","support","learning","reflection"].includes(data.settings.activeView) ? data.settings.activeView : "work");
+        if (name === "close") closeModal();
+        if (name === "clear") { data.settings.filters = emptyData().settings.filters; notify("Filters cleared."); }
+        if (name === "csv") exportCsv();
+        if (name === "backup") download("corporate-work-os-backup.json", "data:application/json;charset=utf-8," + encodeURIComponent(JSON.stringify({ profile, exportedAt: new Date().toISOString(), data }, null, 2)));
+        if (name === "pdf") printReport();
+      }
+      function notify(message) { save(); toast = message; render(); setTimeout(() => { toast = ""; render(); }, 1500); }
+      function collectionOf(type) { return { work: "workLogs", support: "support", learning: "learning", reflection: "reflections", reminder: "reminders" }[type]; }
+      function modalTitle(type) { return { work: "Daily Work Log", support: "Manager Support Record", learning: "Learning Record", reflection: "End-of-Day Reflection", reminder: "Reminder" }[type]; }
+      function badge(id) { return { work: data.workLogs.length, support: data.support.length, learning: data.learning.length, reminders: data.reminders.length, reflection: data.reflections.length }[id] || ""; }
+      function greeting() { const h = new Date().getHours(); return h < 12 ? "morning" : h < 17 ? "afternoon" : "evening"; }
+      function moveMonth(offset) { const [y,m] = data.settings.calendarMonth.split("-").map(Number); const d = new Date(y, m - 1 + offset, 1); data.settings.calendarMonth = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`; save(); render(); }
+      function calendarItems() {
+        return [
+          ...data.workLogs.map(i => ({ date: i.deadline, label: `${i.taskAssigned || "Work"} - ${i.status || ""}`, view: "work" })),
+          ...data.support.map(i => ({ date: i.date, label: `Support - ${i.title || i.category || ""}`, view: "support" })),
+          ...data.learning.map(i => ({ date: i.date, label: `Learning - ${i.skill || ""}`, view: "learning" })),
+          ...data.reflections.map(i => ({ date: i.date, label: "Reflection", view: "reflection" })),
+          ...data.reminders.map(i => ({ date: i.date, label: `Reminder - ${i.status || "Open"}`, view: "reminders" }))
+        ].filter(i => i.date);
+      }
+      function filter(items, fields) {
+        const f = data.settings.filters;
+        const q = f.query.trim().toLowerCase();
+        const from = f.from ? new Date(f.from) : null;
+        const to = f.to ? new Date(f.to) : null;
+        return items.filter(item => {
+          const itemDate = dateOf(item) ? new Date(dateOf(item)) : null;
+          const tags = splitTags(item.tags);
+          const haystack = fields.map(field => String(item[field] || "").toLowerCase()).join(" ");
+          return (!q || haystack.includes(q) || tags.some(tag => tag.includes(q))) &&
+            (f.status === "All" || item.status === f.status) &&
+            (f.priority === "All" || item.priority === f.priority) &&
+            (f.department === "All" || item.department === f.department) &&
+            (f.category === "All" || item.category === f.category) &&
+            (f.tag === "All" || tags.includes(f.tag.toLowerCase())) &&
+            (!from || (itemDate && itemDate >= from)) &&
+            (!to || (itemDate && itemDate <= to));
+        });
+      }
+      function filteredWork() { return filter(data.workLogs, ["taskAssigned","assignedBy","department","notes","outcome","learning","challenges","solution","impact","tags"]); }
+      function filteredSupport() { return filter(data.support, ["title","category","department","description","impact","tags"]); }
+      function filteredLearning() { return filter(data.learning, ["skill","category","lesson","mistake","application","tags"]); }
+      function filteredReflections() { return filter(data.reflections, ["wentWell","couldImprove","biggestWin","biggestChallenge","tomorrowFocus"]); }
+      function filteredReminders() { return filter(data.reminders, ["message","status"]); }
+
+      function rows() {
+        const header = ["Owner","Company","GPN","Type","Date","Title","Priority","Status","Department/Category","Hours","Outcome","Learning/Lesson","Challenge","Solution","Impact","Tags"];
+        return [header,
+          ...data.workLogs.map(i => [profile.name,profile.company,profile.gpn,"Daily Work Log",i.deadline || "",i.taskAssigned || "",i.priority || "",i.status || "",i.department || "",i.timeSpent || "",i.outcome || "",i.learning || "",i.challenges || "",i.solution || "",i.impact || "",i.tags || ""]),
+          ...data.support.map(i => [profile.name,profile.company,profile.gpn,"Manager Support",i.date || "",i.title || "",i.priority || "",i.status || "",i.category || i.department || "",i.timeSaved || "","","","","",i.impact || i.description || "",i.tags || ""]),
+          ...data.learning.map(i => [profile.name,profile.company,profile.gpn,"Learning",i.date || "",i.skill || "","",i.status || "",i.category || "",i.hours || "","",i.lesson || "",i.mistake || "",i.application || "","",i.tags || ""]),
+          ...data.reflections.map(i => [profile.name,profile.company,profile.gpn,"Reflection",i.date || "",i.biggestWin || i.wentWell || "","","","","",i.wentWell || "",i.couldImprove || "",i.biggestChallenge || "","",i.tomorrowFocus || "",""])
+        ];
+      }
+      function csvCell(value) { return `"${String(value ?? "").replaceAll('"', '""')}"`; }
+      function exportCsv() { download("corporate-work-os.csv", "data:text/csv;charset=utf-8," + encodeURIComponent(rows().map(row => row.map(csvCell).join(",")).join("\n"))); }
+      function download(filename, href) { const a = document.createElement("a"); a.href = href; a.download = filename; document.body.append(a); a.click(); a.remove(); }
+      function printReport() {
+        const a = analytics();
+        const w = window.open("", "_blank", "width=1100,height=800");
+        if (!w) return alert("Please allow popups to generate the PDF report.");
+        const table = (title, items, fields) => `<h2>${esc(title)}</h2><table><thead><tr>${fields.map(f => `<th>${esc(f.replace(/([A-Z])/g, " $1"))}</th>`).join("")}</tr></thead><tbody>${items.length ? items.map(item => `<tr>${fields.map(f => `<td>${esc(item[f] || "")}</td>`).join("")}</tr>`).join("") : `<tr><td colspan="${fields.length}">No user-entered records yet.</td></tr>`}</tbody></table>`;
+        w.document.write(`<!doctype html><html><head><title>Corporate Work OS Report</title><style>body{font-family:Arial,sans-serif;margin:40px;color:#172033}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.box{border:1px solid #d7dce5;border-radius:8px;padding:14px}table{width:100%;border-collapse:collapse;margin-top:12px;font-size:12px}th,td{border:1px solid #d7dce5;padding:8px;text-align:left;vertical-align:top}th{background:#eef3f8}@media print{button{display:none}body{margin:18mm}}</style></head><body><button onclick="window.print()">Print or Save as PDF</button><h1>${profile.name} - Corporate Work OS Report</h1><p>${profile.position}, ${profile.department} | ${profile.company} | GPN ${profile.gpn}</p><section class="grid"><div class="box"><strong>Tasks Logged</strong><br>${a.totalTasks}</div><div class="box"><strong>Completed</strong><br>${a.completedTasks}</div><div class="box"><strong>Efficiency</strong><br>${a.efficiencyScore}%</div><div class="box"><strong>Learning Hours</strong><br>${a.learningHours}</div></section>${table("Daily Work Log", data.workLogs, ["taskAssigned","priority","assignedBy","deadline","department","timeSpent","status","outcome","learning","impact"])}${table("Manager Support Tracker", data.support, ["date","category","title","timeSaved","priority","status","description","impact"])}${table("Learning Dashboard", data.learning, ["date","category","skill","hours","status","lesson","mistake","application"])}${table("Reflection System", data.reflections, ["date","wentWell","couldImprove","biggestWin","biggestChallenge","tomorrowFocus"])}</body></html>`);
+        w.document.close();
+        w.focus();
+      }
+    </script>
+  </body>
+</html>
